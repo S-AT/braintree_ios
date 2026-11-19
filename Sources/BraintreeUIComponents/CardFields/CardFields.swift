@@ -14,6 +14,7 @@ public struct CardFields: View {
     @State private var showCVVHint = false
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     private var onValidityChange: ((Bool, @escaping () -> Void) -> Void)?
+    private var cardholderName: String?
     private var apiClient: BTAPIClient
 
     // NEXT_MAJOR_VERSION: remove useCustomHint, showCVVHint overlay, and CVVHintCard entirely
@@ -116,10 +117,14 @@ public struct CardFields: View {
             )
             .onAppear {
                 apiClient.sendAnalyticsEvent(UIComponentsAnalytics.cardFieldsPresented)
+                viewModel.cardholderName = cardholderName
                 onValidityChange?(viewModel.isFormValid, submitAction)
             }
             .onReceive(viewModel.formValidityPublisher) { isValid in
                 onValidityChange?(isValid, submitAction)
+            }
+            .onChange(of: cardholderName) { newName in
+                viewModel.cardholderName = newName
             }
 
             // Custom CVV hint card for iPhone running iOS 16.0–16.3.
@@ -154,6 +159,19 @@ public struct CardFields: View {
     public func onValidityChange(_ handler: @escaping (Bool, @escaping () -> Void) -> Void) -> CardFields {
         var copy = self
         copy.onValidityChange = handler
+        return copy
+    }
+
+    /// Supplies the cardholder name from your own input field, read when the card is tokenized.
+    ///
+    /// Use this when the name is edited alongside the card fields. The value current at submit time
+    /// is used, so the form does not need to be recreated when it changes. When non-nil, it replaces
+    /// the `cardholderName` of the `BTCard` passed to the initializer.
+    /// - Parameter name: The cardholder's name, or `nil` to keep the one from the `BTCard`.
+    /// - Returns: A modified `CardFields` view.
+    public func cardholderName(_ name: String?) -> CardFields {
+        var copy = self
+        copy.cardholderName = name
         return copy
     }
 }

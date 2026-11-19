@@ -223,13 +223,16 @@ import BraintreeCore
     /// Returns a new `BTCard` by merging the card number, expiration date, and CVV collected by
     /// `CardFields` with the metadata fields (e.g. cardholder name, billing address) from this instance.
     ///
+    /// - Parameter cardholderName: Optional: When non-nil, replaces this instance's cardholder name.
+    ///
     /// - Warning: This method is intended for internal use by `CardFields` only and is not part of
     ///   the public merchant-facing API. Do not call this method directly.
     public func merging(
         cardNumber: String,
         expirationMonth: String,
         expirationYear: String,
-        cvv: String
+        cvv: String,
+        cardholderName: String? = nil
     ) -> BTCard {
         BTCard(
             number: cardNumber,
@@ -237,7 +240,7 @@ import BraintreeCore
             expirationYear: expirationYear,
             cvv: cvv,
             postalCode: postalCode,
-            cardholderName: cardholderName,
+            cardholderName: cardholderName ?? self.cardholderName,
             firstName: firstName,
             lastName: lastName,
             company: company,

@@ -18,6 +18,32 @@ class BTCard_Tests: XCTestCase {
         XCTAssertEqual(card.cvv, "123")
     }
 
+    // MARK: - Merging
+
+    func testMerging_withoutCardholderName_keepsCardholderNameFromInstance() {
+        let card = BTCard(cardholderName: "Brian Tree", postalCode: "11111")
+            .merging(cardNumber: "4111111111111111", expirationMonth: "12", expirationYear: "2038", cvv: "123")
+
+        XCTAssertEqual(card.number, "4111111111111111")
+        XCTAssertEqual(card.cvv, "123")
+        XCTAssertEqual(card.cardholderName, "Brian Tree")
+        XCTAssertEqual(card.postalCode, "11111")
+    }
+
+    func testMerging_withCardholderName_replacesCardholderName() {
+        let card = BTCard(cardholderName: "Brian Tree", postalCode: "11111")
+            .merging(
+                cardNumber: "4111111111111111",
+                expirationMonth: "12",
+                expirationYear: "2038",
+                cvv: "123",
+                cardholderName: "Jane Doe"
+            )
+
+        XCTAssertEqual(card.cardholderName, "Jane Doe")
+        XCTAssertEqual(card.postalCode, "11111")
+    }
+
     // MARK: - Non-GraphQL Parameters
 
     func testParameters_setsAllParameters() {

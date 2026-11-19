@@ -13,6 +13,9 @@ final class CardFieldsViewModel: ObservableObject {
 
     @Published private(set) var isFormValid: Bool = false
 
+    /// Read at tokenization time; when non-nil, replaces the cardholder name of the `BTCard` passed at initialization.
+    var cardholderName: String?
+
     // Debounced so rapid delete+retype coalesces — never delivers an intermediate invalid state.
     lazy var formValidityPublisher: AnyPublisher<Bool, Never> = $isFormValid
         .dropFirst()
@@ -60,7 +63,8 @@ final class CardFieldsViewModel: ObservableObject {
             cardNumber: cardNumberViewModel.value,
             expirationMonth: expirationDateViewModel.expirationMonth,
             expirationYear: expirationDateViewModel.expirationYear,
-            cvv: cvvViewModel.value
+            cvv: cvvViewModel.value,
+            cardholderName: cardholderName
         )
 
         Task {
