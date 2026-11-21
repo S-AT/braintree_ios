@@ -3,6 +3,7 @@
 ## unreleased
 * BraintreeUIComponents
     * Add `CardFields.cardholderName(_:)` to supply the cardholder name from a merchant field at tokenization time, so the form doesn't have to be recreated when the name changes
+    * Add `CardFields.postalCode(_:)` to supply the billing postal code from a merchant field at tokenization time
 
 ## 7.14.0 (2026-11-10)
 * Remove CocoaPods support -- `Braintree.podspec` has been deleted and CocoaPods integration artifacts removed from the SDK, please migrate to a supported package manager

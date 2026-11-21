@@ -44,6 +44,20 @@ class BTCard_Tests: XCTestCase {
         XCTAssertEqual(card.postalCode, "11111")
     }
 
+    func testMerging_withPostalCode_replacesPostalCode() {
+        let card = BTCard(cardholderName: "Brian Tree", postalCode: "11111")
+            .merging(
+                cardNumber: "4111111111111111",
+                expirationMonth: "12",
+                expirationYear: "2038",
+                cvv: "123",
+                postalCode: "60606"
+            )
+
+        XCTAssertEqual(card.postalCode, "60606")
+        XCTAssertEqual(card.cardholderName, "Brian Tree")
+    }
+
     // MARK: - Non-GraphQL Parameters
 
     func testParameters_setsAllParameters() {

@@ -15,6 +15,7 @@ public struct CardFields: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     private var onValidityChange: ((Bool, @escaping () -> Void) -> Void)?
     private var cardholderName: String?
+    private var postalCode: String?
     private var apiClient: BTAPIClient
 
     // NEXT_MAJOR_VERSION: remove useCustomHint, showCVVHint overlay, and CVVHintCard entirely
@@ -118,6 +119,7 @@ public struct CardFields: View {
             .onAppear {
                 apiClient.sendAnalyticsEvent(UIComponentsAnalytics.cardFieldsPresented)
                 viewModel.cardholderName = cardholderName
+                viewModel.postalCode = postalCode
                 onValidityChange?(viewModel.isFormValid, submitAction)
             }
             .onReceive(viewModel.formValidityPublisher) { isValid in
@@ -125,6 +127,9 @@ public struct CardFields: View {
             }
             .onChange(of: cardholderName) { newName in
                 viewModel.cardholderName = newName
+            }
+            .onChange(of: postalCode) { newPostalCode in
+                viewModel.postalCode = newPostalCode
             }
 
             // Custom CVV hint card for iPhone running iOS 16.0–16.3.
@@ -172,6 +177,19 @@ public struct CardFields: View {
     public func cardholderName(_ name: String?) -> CardFields {
         var copy = self
         copy.cardholderName = name
+        return copy
+    }
+
+    /// Supplies the billing postal code from your own input field, read when the card is tokenized.
+    ///
+    /// Use this when your gateway's AVS rules require a postal code and you collect it alongside
+    /// the card fields. The value current at submit time is used. When non-nil, it replaces the
+    /// `postalCode` of the `BTCard` passed to the initializer.
+    /// - Parameter postalCode: The billing postal code, or `nil` to keep the one from the `BTCard`.
+    /// - Returns: A modified `CardFields` view.
+    public func postalCode(_ postalCode: String?) -> CardFields {
+        var copy = self
+        copy.postalCode = postalCode
         return copy
     }
 }
