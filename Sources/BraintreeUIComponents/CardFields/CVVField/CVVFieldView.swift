@@ -35,6 +35,12 @@ struct CVVFieldView: View {
         return .constant(false)
     }
 
+    // NEXT_MAJOR_VERSION: use .creditCardSecurityCode directly when minimum target moved to iOS 17 or higher
+    private var securityCodeContentType: UITextContentType? {
+        if #available(iOS 17.0, *) { return .creditCardSecurityCode }
+        return nil
+    }
+
     // MARK: - View
 
     var body: some View {
@@ -50,6 +56,7 @@ struct CVVFieldView: View {
                 ZStack(alignment: .leading) {
                     TextField("", text: $textFieldText)
                     .keyboardType(.numberPad)
+                    .textContentType(securityCodeContentType)
                     .focused($isFocused)
                     .foregroundColor(.clear)
                     .tint(Color(.label))

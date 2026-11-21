@@ -12,6 +12,12 @@ struct ExpirationDateFieldView: View {
     @FocusState private var isFocused: Bool
     @State private var textFieldText: String = ""
 
+    // NEXT_MAJOR_VERSION: use .creditCardExpiration directly when minimum target moved to iOS 17 or higher
+    private var expirationContentType: UITextContentType? {
+        if #available(iOS 17.0, *) { return .creditCardExpiration }
+        return nil
+    }
+
     var body: some View {
         CardFieldsContainerView(
             validationState: viewModel.validationState,
@@ -24,6 +30,7 @@ struct ExpirationDateFieldView: View {
 
                 TextField("", text: $textFieldText)
                     .keyboardType(.numberPad)
+                    .textContentType(expirationContentType)
                     .focused($isFocused)
                     .font(.body)
                     .foregroundColor(Color(.label))

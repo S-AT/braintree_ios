@@ -22,6 +22,7 @@ struct CardNumberFieldView: View {
 
                 TextField("", text: $textFieldText)
                     .keyboardType(.numberPad)
+                    .textContentType(.creditCardNumber)
                     .focused($isFocused)
                     .font(.system(size: 16))
                     .foregroundColor(Color(.label))
